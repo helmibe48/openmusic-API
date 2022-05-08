@@ -42,6 +42,16 @@ class AlbumsService {
     }
   }
 
+  async addCoverValueById(id, cover) {
+    const result = await this._pool.query({
+      text: 'UPDATE albums SET cover = $1 WHERE id = $2 RETURNING id',
+      values: [cover, id],
+    });
+    if (!result.rows.length) {
+      throw new NotFoundError('Gagal memperbarui albums. Id tidak ditemukan');
+    }
+  }
+
   async deleteAlbumById(id) {
     const result = await this._pool.query({
       text: 'DELETE FROM albums WHERE id = $1 RETURNING id',
